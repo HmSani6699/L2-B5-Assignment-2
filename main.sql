@@ -43,3 +43,31 @@ WHERE
         YEAR
         FROM species.discovery_date
     ) < 1800;
+
+-- 8️⃣ Label each sighting's time of day as 'Morning', 'Afternoon', or 'Evening'.
+SELECT
+    sighting_id,
+    CASE
+        WHEN EXTRACT(
+            HOUR
+            FROM sighting_time
+        ) < 12 THEN 'MORNING'
+        WHEN EXTRACT(
+            HOUR
+            FROM sighting_time
+        ) >= 12
+        AND EXTRACT(
+            HOUR
+            FROM sighting_time
+        ) < 17 THEN 'Afternoon'
+        ELSE 'Evening'
+    END AS time_of_day
+FROM sightings;
+
+-- 9 ️⃣ Delete rangers who have never sighted any species
+DELETE FROM rangers AS r
+WHERE
+    r.ranger_id NOT in (
+        SELECT ranger_id
+        FROM sightings
+    );
