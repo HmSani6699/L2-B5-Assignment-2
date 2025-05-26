@@ -129,9 +129,34 @@ SELECT * FROM rangers;
 
 SELECT * FROM sightings;
 
-SELECT name, count(*)
-FROM sightings
-    JOIN rangers ON sightings.ranger_id = rangers.ranger_id
+SELECT name AS ranger_name, count(*) AS total_sight
+FROM sightings AS s
+    JOIN rangers AS r ON s.ranger_id = r.ranger_id
 GROUP BY
-    name
-ORDER BY name ASC;
+    name;
+
+-- 5️⃣ List species that have never been sighted.
+SELECT common_name
+FROM species
+WHERE
+    species_id NOT IN (
+        SELECT species_id
+        FROM sightings
+    );
+
+-- 6️⃣ Show the most recent 2 sightings.
+
+SELECT * FROM sightings;
+-- sighting time
+SELECT * FROM species;
+--Comon name
+SELECT * FROM rangers;
+--name
+
+SELECT common_name, sighting_time, name
+FROM
+    sightings AS s
+    INNER JOIN rangers AS r ON s.ranger_id = r.ranger_id
+    INNER JOIN species AS sp ON sp.species_id = s.species_id
+ORDER BY s.sighting_time DESC
+LIMIT 2;
